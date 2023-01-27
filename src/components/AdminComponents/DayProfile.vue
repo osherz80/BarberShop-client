@@ -47,6 +47,8 @@ export default {
     isChanged: false,
     openHour: 0,
     closeHour: 0,
+    openBeforeChange: 0,
+    closeBeforeChange: 0,
     changeRules: [
       (v) => {
         if (v > 24) {
@@ -67,9 +69,8 @@ export default {
   created() {
     this.openHour = this.day.open;
     this.closeHour = this.day.close;
-    // eventBus.$on('changeAll', (openState) => {
-    //   openState ? this.closeDay(index) : this.openDay(index);
-    // })
+    this.openBeforeChange = this.day.open;
+    this.closeBeforeChange = this.day.close;
   },
   methods: {
     ...mapActions(["openDay", "closeDay", "changeDayHours"]),
@@ -87,9 +88,14 @@ export default {
       ) {
         this.isChanged = false;
       } else {
-        this.openHour = parseInt(this.openHour);
-        this.closeHour = parseInt(this.closeHour);
-        this.isChanged = true;
+        if (
+          this.openHour != this.openBeforeChange ||
+          this.closeHour != this.closeBeforeChange
+        ) {
+          this.openHour = parseInt(this.openHour);
+          this.closeHour = parseInt(this.closeHour);
+          this.isChanged = true;
+        }
       }
     },
     saveChanges() {
@@ -113,6 +119,7 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;
-  padding-right: 15px;
+  // padding-right: 15px;
+  padding: 0 15px;
 }
 </style>
