@@ -26,6 +26,7 @@
         locale="he-IL"
         :first-day-of-week="1"
         :attributes="attributes"
+        :min-date="new Date()"
         @dayclick="onDayClick"
       />
     </main>
@@ -88,9 +89,11 @@ export default {
   },
   methods: {
     async onDayClick(day) {
-      eventBus.$emit("setChoosenDate", day.date);
-      this.selectedDate = day.date;
-      this.openHours();
+      if (this.isAfterToday(day)) {
+        eventBus.$emit("setChoosenDate", day.date);
+        this.selectedDate = day.date;
+        this.openHours();
+      }
     },
     chooseTreatment(id) {
       this.selectedTreatmentId = id;
@@ -113,6 +116,11 @@ export default {
           );
         }
       }
+    },
+    isAfterToday(dateToCheck) {
+      return (
+        new Date(dateToCheck.date).getTime() >= new Date().setHours(0, 0, 0, 0)
+      );
     },
     openHours() {
       eventBus.$emit("openHoursOverlay");
